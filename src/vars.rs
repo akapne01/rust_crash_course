@@ -5,6 +5,7 @@
 pub fn run() {
     let name = "Alice";
     let mut age = 37;
+    println!("Age before reassignment: {}", age);
     age = 38;
 
     println!("My name is {} and I am {}.", name, age);
