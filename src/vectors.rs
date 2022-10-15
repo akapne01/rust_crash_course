@@ -1,6 +1,5 @@
 // Vectors - Resisable Arrays
 
-use core::num;
 use std::mem;
 
 pub fn run() {
@@ -41,7 +40,7 @@ pub fn run() {
 
     // Loop and mutate values 
     for x in numbers.iter_mut() {
-        // Multiply by 2
+        // Multiply by
         *x *= 2;
     }
 
