@@ -1,5 +1,3 @@
-use std::array;
-
 // Reference Pointers - point to the resource in memory
 pub fn run() {
     println!("### Reference Pointers ###");
