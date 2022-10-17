@@ -1,5 +1,10 @@
 // Conditionals - Used to check the condition of something and act on the result.
 // There is no terinary operator in rust. 
+// Docs: https://doc.rust-lang.org/book/ch03-05-control-flow.html
+// Blocks of code associated with if expressions are sometimes called arms.
+// After if the expression always need to be of type: bool. 
+// Rust doesn't auto convert non-boolean types to bool. 
+// Numbers as part of expression to evaluate must be same type. 
 
 pub fn run() {
     println!("### Conditionals ###");
