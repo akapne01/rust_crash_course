@@ -12,6 +12,8 @@ mod pointer_references;
 mod structs;
 mod enums;
 mod cli;
+mod slice_type;
+mod string_slices;
 
 fn main() {
     print::run();
@@ -28,4 +30,6 @@ fn main() {
     structs::run();
     enums::run();
     cli::run();
+    slice_type::run();
+    string_slices::run();
 }
