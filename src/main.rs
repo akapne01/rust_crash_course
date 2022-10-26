@@ -14,6 +14,7 @@ mod tuples;
 mod types;
 mod vars;
 mod vectors;
+mod rectangles_struct_example;
 
 fn main() {
     print::run();
@@ -32,4 +33,5 @@ fn main() {
     cli::run();
     slice_type::run();
     string_slices::run();
+    rectangles_struct_example::run();
 }
