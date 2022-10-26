@@ -1,19 +1,19 @@
-mod print;
-mod vars;
-mod types;
-mod strings;
-mod tuples;
 mod arrays;
-mod vectors;
-mod conditionals;
-mod loops;
-mod functions;
-mod pointer_references;
-mod structs;
-mod enums;
 mod cli;
+mod conditionals;
+mod enums;
+mod functions;
+mod loops;
+mod pointer_references;
+mod print;
 mod slice_type;
 mod string_slices;
+mod strings;
+mod structs;
+mod tuples;
+mod types;
+mod vars;
+mod vectors;
 
 fn main() {
     print::run();
