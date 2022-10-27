@@ -16,6 +16,7 @@ mod vars;
 mod vectors;
 mod rectangles_struct_example;
 mod optional_enum;
+mod if_let;
 
 fn main() {
     print::run();
@@ -36,4 +37,5 @@ fn main() {
     string_slices::run();
     rectangles_struct_example::run();
     optional_enum::run();
+    if_let::run();
 }
