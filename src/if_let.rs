@@ -18,4 +18,13 @@ pub fn run() {
     if let Some(max) = config_max {
         println!("The maximum is configured to be {}", max);
     }
+
+    let mut num: i32 = 5;
+    match num {
+        1 => println!("One"),
+        2 | 3 => println!("Two or Three"),
+        4 | 5 | 6 => println!("Four or Five or Six"),
+        7 => println!("Seven"),
+        _ => println!("Invalid number"),
+    };
 }
