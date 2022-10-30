@@ -9,6 +9,7 @@ mod loops;
 mod map;
 mod optional_enum;
 mod pointer_references;
+mod polars_dataframes;
 mod print;
 mod rectangles_struct_example;
 mod slice_type;
@@ -42,4 +43,5 @@ fn main() {
     if_let::run();
     closures::run();
     map::run();
+    polars_dataframes::run();
 }
