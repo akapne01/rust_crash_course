@@ -1,11 +1,16 @@
 mod arrays;
 mod cli;
+mod closures;
 mod conditionals;
 mod enums;
 mod functions;
+mod if_let;
 mod loops;
+mod map;
+mod optional_enum;
 mod pointer_references;
 mod print;
+mod rectangles_struct_example;
 mod slice_type;
 mod string_slices;
 mod strings;
@@ -14,9 +19,6 @@ mod tuples;
 mod types;
 mod vars;
 mod vectors;
-mod rectangles_struct_example;
-mod optional_enum;
-mod if_let;
 
 fn main() {
     print::run();
@@ -38,4 +40,6 @@ fn main() {
     rectangles_struct_example::run();
     optional_enum::run();
     if_let::run();
+    closures::run();
+    map::run();
 }
