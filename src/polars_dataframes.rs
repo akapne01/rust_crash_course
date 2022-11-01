@@ -107,67 +107,68 @@ fn map_to_sign(ser: Series) -> Series {
         .collect()
 }
 
-fn add_house(series: Series, house_df: DataFrame) -> Series {
-    let res: Series = series
+fn add_house_for_planets_deg(series: Series, house_df: DataFrame) -> Series {
+    series
         .f64()
         .expect("Series was not an f64 dtype")
         .into_iter()
-        .map(|n| calculate_house(n.unwrap(), house_df.clone()))
-        .collect();
-    res
+        .map(|n| map_degree_to_house(n.unwrap(), house_df.clone()))
+        .collect()
 }
 
-fn calculate_house(given_value: f64, df: DataFrame) -> i32 {
-    let predicate = [
-        all(),
-        col("abs_deg")
+fn map_degree_to_house(given_value: f64, dfh: DataFrame) -> i32 {
+    // To map to the house, looks for which house cusp is nearest in the degree.
+    // Then obtains abs_deg and house number for this cusp. House number is adjusted
+    // based in the abs_deg, and then returned. 
+
+    // 1. Add col: nearest_deg
+    let dfh = dfh
+        .lazy()
+        .with_columns([col("abs_deg")
             .map(
                 move |s| Ok(add_nearest_degree_column(given_value, s)),
                 GetOutput::default(),
             )
-            .alias("nearest_deg"),
-    ];
-    let df = df.lazy().with_columns(predicate).collect().unwrap();
-    // Now the column nearest_deg is added
-    println!("DF: {:?}", df);
+            .alias("nearest_deg")])
+        .collect()
+        .unwrap();
 
-    let df1 = df
+    // 2. Select Col: nearest_deg, and get a minimum degree, then extract it.
+    let df1 = dfh
         .clone()
         .lazy()
         .select([col("nearest_deg").min()])
         .collect()
         .unwrap();
     println!("df1: {:?}", df1);
-    let ser = &df1[0].f64().unwrap().get(0).unwrap();
-    println!("{:?}", ser.clone());
+    let min_value = &df1[0].f64().unwrap().get(0).unwrap();
+    println!("{:?}", min_value.clone());
 
-    let df3 = df
+    // 3. Filter dataframe by nearest_deg where nearest_deg equals the minimum value.
+    let df3 = dfh
         .clone()
         .lazy()
-        .filter(col("nearest_deg").eq(ser.clone()))
+        .filter(col("nearest_deg").eq(min_value.clone()))
         .collect()
         .unwrap();
-    println!("{:?}", df3);
     let deg = &df3[0].f64().unwrap().get(0).unwrap();
+    let num = &df3[1].i32().unwrap().get(0).unwrap();
+
+    println!("{:?}", df3);
     println!("Given Value: {}", given_value);
     println!("Deg : {deg}");
-
-    let num = &df3[1].i32().unwrap().get(0).unwrap();
     println!("Num : {:?}", num);
 
-    let house_val = deg.clone();
-
-    if given_value > house_val {
+    if given_value > deg.clone() {
         num.clone()
     } else {
         let res = num.clone() - 1;
         if res == 0 {
-            // Returns the element of last house.
+            // Returns the value of last house.
             return 5;
         }
         res
     }
-    // println!("Planet with abs deg: {given_value} is in house {house}");
 }
 
 fn nearest_value(given: f64, n: f64) -> f64 {
@@ -183,22 +184,17 @@ fn add_nearest_degree_column(given: f64, series: Series) -> Series {
         .collect()
 }
 
-fn populate_planet_in_house(planets: DataFrame, houses: DataFrame) -> DataFrame {
-    let predicate_planet_in_house = [
-        all(),
-        col("abs_deg")
+fn add_house_column(planets: DataFrame, houses: DataFrame) -> DataFrame {
+    planets
+        .lazy()
+        .with_columns([col("abs_deg")
             .map(
-                move |s| Ok(add_house(s, houses.clone())),
+                move |abs_degrees| Ok(add_house_for_planets_deg(abs_degrees, houses.clone())),
                 GetOutput::default(),
             )
-            .alias("house"),
-    ];
-    let df4 = planets
-        .lazy()
-        .with_columns(predicate_planet_in_house)
+            .alias("house")])
         .collect()
-        .unwrap();
-    df4
+        .unwrap()
 }
 
 pub fn run() {
@@ -261,6 +257,6 @@ pub fn run() {
     ]
     .unwrap();
 
-    let df = populate_planet_in_house(planets, df_h);
+    let df = add_house_column(planets, df_h);
     println!("Resulting dataframe: {:?}", df);
 }
