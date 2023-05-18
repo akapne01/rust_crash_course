@@ -21,6 +21,7 @@ mod types;
 mod vars;
 mod vectors;
 mod guessing_game;
+mod reverse_string;
 
 fn main() {
     print::run();
@@ -46,4 +47,5 @@ fn main() {
     map::run();
     polars_dataframes::run();
     guessing_game::run();
+    reverse_string::run();
 }
