@@ -8,18 +8,18 @@ use polars_lazy::{dsl::GetOutput, prelude::*};
 /// https://doc.rust-lang.org/std/iter/struct.Map.html
 
 // Given a degree in f64, cast it to i32
-fn cast_float_to_integer(ser: Series) -> Series {
+fn cast_float_to_integer(ser: Series) -> Option<Series> {
     let res: Series = ser
         .f64()
         .expect("Series was not an f64 dtype")
         .into_iter()
         .map(|n| n.unwrap() as i32)
         .collect();
-    res
+    Some(res)
 }
 
 // Given a degree in f64, calculate min from the fraction.
-fn get_min(ser: Series) -> Series {
+fn get_min(ser: Series) -> Option<Series> {
     let res: Series = ser
         .f64()
         .expect("Series was not an f64 dtype")
@@ -30,13 +30,13 @@ fn get_min(ser: Series) -> Series {
             ((deg_f - deg_i as f64) * 60.0) as i32
         })
         .collect();
-    res
+    Some(res)
 }
 
 // Given a degree in f64, calculate sec from the fraction.
 // Used for testing:
 // https://www.calculatorsoup.com/calculators/conversions/convert-decimal-degrees-to-degrees-minutes-seconds.php
-fn get_sec(ser: Series) -> Series {
+fn get_sec(ser: Series) -> Option<Series> {
     let res: Series = ser
         .f64()
         .expect("Series was not an f64 dtype")
@@ -59,31 +59,31 @@ fn get_sec(ser: Series) -> Series {
             sec
         })
         .collect();
-    res
+    Some(res)
 }
 
-fn get_sign_number(ser: Series) -> Series {
+fn get_sign_number(ser: Series) -> Option<Series> {
     let res: Series = ser
         .f64()
         .expect("Series was not an f64 dtype")
         .into_iter()
         .map(|n| n.unwrap() as i32 / 30)
         .collect();
-    res
+    Some(res)
 }
 
-fn get_sign_degree(ser: Series) -> Series {
+fn get_sign_degree(ser: Series) -> Option<Series> {
     let res: Series = ser
         .f64()
         .expect("Series was not an f64 dtype")
         .into_iter()
         .map(|n| n.unwrap() as i32 % 30)
         .collect();
-    res
+    Some(res)
 }
 
-fn map_to_sign(ser: Series) -> Series {
-    ser.i32()
+fn map_to_sign(ser: Series) -> Option<Series> {
+    let result = ser.i32()
         .expect("Series was not an i32 dtype")
         .into_iter()
         .map(|n| {
@@ -104,16 +104,18 @@ fn map_to_sign(ser: Series) -> Series {
                 _ => "Sign number not defined, can't match.",
             }
         })
-        .collect()
+        .collect();
+    Some(result)
 }
 
-fn add_house_for_planets_deg(series: Series, house_df: DataFrame) -> Series {
-    series
+fn add_house_for_planets_deg(series: Series, house_df: DataFrame) -> Option<Series> {
+    let result = series
         .f64()
         .expect("Series was not an f64 dtype")
         .into_iter()
         .map(|n| map_degree_to_house(n.unwrap(), house_df.clone()))
-        .collect()
+        .collect();
+    Some(result)
 }
 
 fn map_degree_to_house(given_value: f64, dfh: DataFrame) -> i32 {
@@ -175,13 +177,14 @@ fn nearest_value(given: f64, n: f64) -> f64 {
     (given - n).abs()
 }
 
-fn add_nearest_degree_column(given: f64, series: Series) -> Series {
-    series
+fn add_nearest_degree_column(given: f64, series: Series) -> Option<Series> {
+    let result = series
         .f64()
         .expect("Series was not an f64 dtype")
         .into_iter()
         .map(move |d| nearest_value(given, d.unwrap()))
-        .collect()
+        .collect();
+    Some(result)
 }
 
 fn add_house_column(planets: DataFrame, houses: DataFrame) -> DataFrame {
