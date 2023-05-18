@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 polars = "0.25.1"
 polars-lazy = "0.25.1"
+rand = "0.8.5"

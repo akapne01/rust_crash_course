@@ -20,6 +20,7 @@ mod tuples;
 mod types;
 mod vars;
 mod vectors;
+mod guessing_game;
 
 fn main() {
     print::run();
@@ -44,4 +45,5 @@ fn main() {
     closures::run();
     map::run();
     polars_dataframes::run();
+    guessing_game::run();
 }
