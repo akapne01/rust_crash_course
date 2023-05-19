@@ -22,6 +22,7 @@ mod vars;
 mod vectors;
 mod guessing_game;
 mod reverse_string;
+mod linked_list;
 
 fn main() {
     print::run();
@@ -46,6 +47,7 @@ fn main() {
     closures::run();
     map::run();
     polars_dataframes::run();
-    guessing_game::run();
+    // guessing_game::run();
     reverse_string::run();
+    linked_list::run();
 }

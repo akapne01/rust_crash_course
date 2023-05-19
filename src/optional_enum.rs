@@ -35,12 +35,14 @@
 /// Using enums we can also take a special actions for a few particular values, but for all other
 /// values take one default action.
 
+#[allow(warnings)]
 #[derive(Debug)]
 enum UsState {
     Alabama,
     Alaska,
     // etc.
 }
+#[allow(warnings)]
 enum Coin {
     Penny,
     Nickel,
@@ -70,6 +72,7 @@ fn plus_one(x: Option<i32>) -> Option<i32> {
     }
 }
 
+#[allow(warnings)]
 pub fn run() {
     println!("\n### Optional Enums ###");
     let some_number = Some(5);

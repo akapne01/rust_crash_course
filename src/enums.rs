@@ -32,6 +32,7 @@ enum IpAddress {
 }
 
 // 3. Message enum
+#[allow(warnings)]
 #[derive(Debug)]
 enum Message {
     Quit,                        // No data assoc.
