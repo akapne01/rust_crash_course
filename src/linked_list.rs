@@ -46,7 +46,7 @@ impl SinglyLinkedList {
             while let Some(node) = current {
                 if node.next.is_none() {
                     node.next = Some(new_node);
-                    break;
+                    return;
                 }
 
                 current = &mut node.next;
@@ -60,56 +60,43 @@ impl SinglyLinkedList {
     }
 
     fn insert_after_given(&mut self, data: &str, given_data: &str) {
-        if self.first.is_none() {
-            panic!("List is empty, this action is not possible.");
-        }
-
         let mut current_node = &mut self.first;
-        let mut node_with_data_found = false;
 
         while let Some(node) = current_node {
-            if given_data.eq(&node.data) {
-                node_with_data_found = true;
-                let pointer_to_next = node.next.clone();
+            if node.data == given_data {
                 let new_node = Some(
-                    Box::new(Node::new_with_next(data.to_string(), pointer_to_next))
+                    Box::new(Node::new_with_next(data.to_string(), node.next.take()))
                 );
                 node.next = new_node;
-                break;
+                return; // Return early after inserting the new node
             }
             current_node = &mut node.next;
         }
 
-        if !node_with_data_found {
-            panic!("Given node {:?} not found in the list!!!!", given_data);
-        }
+        panic!("Given node '{}' not found in the list!", given_data);
     }
 
     fn insert_before_given(&mut self, data: &str, given_data: &str) {
         if self.first.is_none() {
             panic!("List is empty, this action is not possible.");
         }
-        let mut node_with_data_found = false;
+
         let mut current_node = &mut self.first;
 
-        // We want to check if the node.next is equal to the node made from given_data
         while let Some(node) = current_node {
-            let next_data: String = node.next.clone().expect("Next node is not defined").data;
-            if given_data == next_data {
-                node_with_data_found = true;
-                let pointer_to_next = node.next.clone();
-                let new_node = Some(
-                    Box::new(Node::new_with_next(data.to_string(), pointer_to_next))
-                );
-                node.next = new_node;
-                break;
+            if let Some(next_node) = &mut node.next {
+                if next_node.data == given_data {
+                    let new_node = Box::new(
+                        Node::new_with_next(data.to_string(), Some(next_node.clone()))
+                    );
+                    node.next = Some(new_node);
+                    return; // Return early after inserting the new node
+                }
             }
             current_node = &mut node.next;
         }
 
-        if !node_with_data_found {
-            panic!("Given node {:?} not found in the list!!!!", given_data);
-        }
+        panic!("Given node '{}' not found in the list!", given_data);
     }
 }
 
