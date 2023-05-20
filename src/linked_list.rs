@@ -70,6 +70,35 @@ impl SinglyLinkedList {
             self.first = new_node;
         }
     }
+
+    fn insert_after_given(&mut self, data: String, given_data: String) {
+        if self.first.is_none() {
+            panic!("List is empty, this action is not possible.");
+        }
+
+        let mut current_node = &mut self.first;
+        let mut node_with_data_found = false;
+
+        while let Some(node) = current_node {
+            if given_data.eq(&node.data) {
+                node_with_data_found = true;
+                let pointer_to_next = node.next.clone();
+                println!("Pointer to next: {:?}", pointer_to_next);
+                let new_node = Some(Box::new(Node::new_with_reference(
+                    data.clone(),
+                    pointer_to_next,
+                )));
+                println!("New Node: {:?}", new_node.clone());
+                node.next = new_node;
+                break;
+            }
+            current_node = &mut node.next;
+        }
+
+        if !node_with_data_found {
+            panic!("Given node {:?} not found in the list!!!!", given_data);
+        }
+    }
 }
 
 pub fn run() {
@@ -223,6 +252,44 @@ mod tests {
         actual_list.append(data_3);
 
         actual_list.prepend(data_4);
+
+        assert_eq!(expected_list, actual_list);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_that_insert_after_panics_if_empty_list_given() {
+        let mut empty_list = SinglyLinkedList::new();
+        empty_list.insert_after_given(String::from("A"), String::from("B"))
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_that_insert_after_panics_if_given_node_not_found() {
+        let mut actual_list = SinglyLinkedList::new();
+        // let given_node = Some(Box::new(Node::new(String::from("B"))));
+        actual_list.append(String::from("A"));
+        actual_list.insert_after_given(String::from("C"), String::from("B"));
+    }
+
+    #[test]
+    fn test_insert_after_if_2_nodes_already_added_insert_between_2() {
+        let data_1 = String::from("A");
+        let data_2 = String::from("C");
+        let data_3 = String::from("B");
+
+        let node_3 = Some(Box::new(Node::new(data_3.clone())));
+        let node_2 = Some(Box::new(Node::new_with_reference(data_2.clone(), node_3)));
+        let node_1 = Some(Box::new(Node::new_with_reference(data_1.clone(), node_2)));
+        let expected_list = SinglyLinkedList {
+            first: node_1.clone(),
+        };
+
+        let mut actual_list = SinglyLinkedList::new();
+        actual_list.append(data_1.clone());
+        actual_list.append(data_3);
+
+        actual_list.insert_after_given(data_2, data_1);
 
         assert_eq!(expected_list, actual_list);
     }
