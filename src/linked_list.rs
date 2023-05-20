@@ -19,6 +19,14 @@ impl Node {
             next: None,
         }
     }
+
+    fn new_with_reference(data: String, next: Option<Box<Node>>) -> Self {
+        Node { data, next }
+    }
+
+    fn update_next(&mut self, next: Option<Box<Node>>) {
+        self.next = next;
+    }
 }
 
 #[allow(dead_code)]
@@ -50,6 +58,16 @@ impl SinglyLinkedList {
 
                 current = &mut node.next;
             }
+        }
+    }
+
+    fn prepend(&mut self, data: String) {
+        if self.first.is_none() {
+            self.first = Some(Box::new(Node::new(data)))
+        } else {
+            let current_first = self.first.clone();
+            let new_node = Some(Box::new(Node::new_with_reference(data, current_first)));
+            self.first = new_node;
         }
     }
 }
@@ -146,6 +164,65 @@ mod tests {
         actual_list.append(data_2);
         actual_list.append(data_3);
         actual_list.append(data_4);
+
+        assert_eq!(expected_list, actual_list);
+    }
+
+    #[test]
+    fn test_prepend_function_if_list_empty() {
+        let data = String::from("A");
+        let expected_list = SinglyLinkedList {
+            first: Some(Box::new(Node::new(data.clone()))),
+        };
+
+        let mut actual_list = SinglyLinkedList::new();
+        actual_list.prepend(data);
+
+        assert_eq!(expected_list, actual_list);
+    }
+
+    #[test]
+    fn test_prepend_if_one_node_added() {
+        let data = String::from("A");
+        let expected_list = SinglyLinkedList {
+            first: Some(Box::new(Node::new(data.clone()))),
+        };
+
+        let mut actual_list = SinglyLinkedList::new();
+        actual_list.prepend(data);
+
+        assert_eq!(expected_list, actual_list);
+    }
+
+    #[test]
+    fn test_prepend_when_list_already_have_elements_added() {
+        let data_1 = String::from("A");
+        let data_2 = String::from("B");
+        let data_3 = String::from("C");
+        let data_4 = String::from("Z");
+
+        let node_3 = Some(Box::new(Node::new(data_3.clone())));
+        let node_2 = Some(Box::new(Node {
+            data: data_2.clone(),
+            next: node_3,
+        }));
+        let node_1 = Some(Box::new(Node {
+            data: data_1.clone(),
+            next: node_2,
+        }));
+        let node_0 = Some(Box::new(Node {
+            data: data_4.clone(),
+            next: node_1,
+        }));
+
+        let expected_list = SinglyLinkedList { first: node_0 };
+
+        let mut actual_list = SinglyLinkedList::new();
+        actual_list.append(data_1);
+        actual_list.append(data_2);
+        actual_list.append(data_3);
+
+        actual_list.prepend(data_4);
 
         assert_eq!(expected_list, actual_list);
     }
