@@ -101,6 +101,14 @@ impl SinglyLinkedList {
 
         panic!("Given node '{}' not found in the list!", given_data);
     }
+
+    fn delete_first(&mut self) {
+        if self.is_empty() {
+            panic!("Cannot delete the first element from an empty list!");
+        }
+        let new_first = self.first.take().unwrap().next;
+        self.first = new_first;
+    }
 }
 
 pub fn run() {
@@ -276,6 +284,28 @@ mod tests {
         list.insert_before_given("C", "B");
 
         let expected_data = vec!["A", "C", "B"];
+
+        assert_list_contains_data!(&list, &expected_data);
+    }
+
+    #[test]
+    #[should_panic(expected = "Cannot delete the first element from an empty list!")]
+    fn delete_first_when_empty_list_panics() {
+        let mut empty_list = SinglyLinkedList::new();
+        empty_list.delete_first();
+    }
+
+    #[test]
+    fn delete_first_when_list_has_elements() {
+        let values = vec!["A", "B", "C"];
+        let mut list = SinglyLinkedList::new();
+        list.append(&values[0]);
+        list.append(&values[1]);
+        list.append(&values[2]);
+
+        list.delete_first();
+
+        let expected_data = vec!["B", "C"];
 
         assert_list_contains_data!(&list, &expected_data);
     }
