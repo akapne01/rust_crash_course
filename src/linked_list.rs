@@ -80,7 +80,7 @@ impl SinglyLinkedList {
     }
 
     fn insert_before_given(&mut self, data: &str, given_data: &str) {
-        if self.first.is_none() {
+        if self.is_empty() {
             panic!("List is empty, this action is not possible.");
         }
 
@@ -108,6 +108,24 @@ impl SinglyLinkedList {
         }
         let new_first = self.first.take().unwrap().next;
         self.first = new_first;
+    }
+
+    fn delete_last(&mut self) {
+        if self.is_empty() {
+            panic!("Cannot delete the last element from an empty list!");
+        }
+        
+        let mut current_node = &mut self.first;
+
+        while let Some(node) = current_node {
+            if let Some(next_node) = &mut node.next {
+                if next_node.next.is_none() {
+                    node.next = None;
+                    return; // Return early after deleting the node
+                }
+            }
+            current_node = &mut node.next;
+        }
     }
 }
 
@@ -306,6 +324,28 @@ mod tests {
         list.delete_first();
 
         let expected_data = vec!["B", "C"];
+
+        assert_list_contains_data!(&list, &expected_data);
+    }
+
+    #[test]
+    #[should_panic(expected = "Cannot delete the last element from an empty list!")]
+    fn delete_last_panics_when_empty_list() {
+        let mut empty_list = SinglyLinkedList::new();
+        empty_list.delete_last();
+    }
+
+    #[test]
+    fn delete_last_when_list_has_elements() {
+        let values = vec!["A", "B", "C"];
+        let mut list = SinglyLinkedList::new();
+        list.append(&values[0]);
+        list.append(&values[1]);
+        list.append(&values[2]);
+
+        list.delete_last();
+
+        let expected_data = vec!["A", "B"];
 
         assert_list_contains_data!(&list, &expected_data);
     }
